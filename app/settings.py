@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-h1qtv2&-aso^6pb9@guj-o2rvksw7_+i(@5!$j%p##(d2$6%r8'
+SECRET_KEY = os.environ.get('SECRET_KEY','django-insecure-h1qtv2&-aso^6pb9@guj-o2rvksw7_+i(@5!$j%p##(d2$6%r8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG','True') =="True"
 
 ALLOWED_HOSTS = ['127.0.0.1','localhost',"iotweb.onrender.com"]
 
@@ -76,15 +77,17 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+if not DEBUG:
+    DATABASES = {
+    'default':dj_database_url.parse(os.environ.get("DATABASE_URL"))
+}
 
-DATABASES = {
+else:
+
+    DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER':'postgres',
-        'PASSWORD':'6EFf2bBg2f*b1*1D1E2aDda6F--D4*g-',
-        'HOST': 'viaduct.proxy.rlwy.net',
-        'PORT':'28234'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
